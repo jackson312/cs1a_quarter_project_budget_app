@@ -1,0 +1,33 @@
+
+public class BudgetApp {
+  public static void main(String [] args) {
+	Scanner input = new Scanner(System.in);
+	int[] estimates = new int[3];
+	System.out.println("Please enter in your monthly salary: ");
+	double salary = input.nextDouble(); 
+
+public static void clientEstimates(int estimates[]) {
+	//This method creates an array inputed with the Clients estimates for each category 
+	//categories we have : [0] -> food, [1] -> bills, [2] -> extras	
+	System.out.println("Please enter in the estimates for the categories asked below.");
+	System.out.println("Enter in your monthly estimate for food: ");
+	estimates[0] = input.nextDouble();
+	System.out.println("Enter in your monthly estimate for bills: ");
+	System.out.pritnln("Bills include anything you pay on a monthly basis such as gym membership, electricity, and etc.");
+	estimates[1] = input.nextDouble();
+	System.out.println("Enter in your monthly estimate for extra necessities: ");
+	estimates[2] = input.nextDouble(); 
+}
+
+public static int usePercentage(int estimates[], double salary) {
+	//This will show what percentage they are using in each category
+	int foodPercentage = (estimates[0] / salary) * 100;
+	System.out.println("Percent spent on food: " + foodPercentage);
+	int billsPercentage = (estimates[1] / salary) * 100;
+	System.out.println("Percent spent on bills: " + billsPercentage;
+	int extraPercentage = (estimates[2] / salary) * 100;
+	System.out.pritnln("Percent spent on extra's: " + extraPercentage);
+	int totalSpent = foodPercentage + billsPercentage + extraPercentage;
+	int savings = 100 - totalSpent;
+
+}
