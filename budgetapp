@@ -1,10 +1,22 @@
 
+//How are we going to give them suggestions? Maybe they can tell us what percentage they want to spend on things and we can show them
+//how much money they can spend depending on that percentage 
 public class BudgetApp {
   public static void main(String [] args) {
 	Scanner input = new Scanner(System.in);
 	int[] estimates = new int[3];
+	double[] money = new double[3];
 	System.out.println("Please enter in your monthly salary: ");
 	double salary = input.nextDouble(); 
+	clientEstimates(estimates[]);
+	usePercentage(estimates[], salary);
+	System.out.println(Would you like to change your estimates?");
+	String answer = input.next()
+	if (answer.equalsIgnoreCase("yes") {
+	     //code allows to change estimates arrays or create a new array
+        }
+   }
+	
 
 public static void clientEstimates(int estimates[]) {
 	//This method creates an array inputed with the Clients estimates for each category 
@@ -30,4 +42,23 @@ public static int usePercentage(int estimates[], double salary) {
 	int totalSpent = foodPercentage + billsPercentage + extraPercentage;
 	int savings = 100 - totalSpent;
 
+}
+
+public static void percentageToMoney(double salary, double money) {
+	//this method allows the person to tell us what percentage they want to use in each category and we tell them how much 
+	//money that is.
+	System.out.println("Please enter in what percentage (in decimal points) you would like to use in each category: ");
+	System.out.println("Please enter the percentage you would like to spend on food: ");
+	money[0] = input.nextDouble();
+	System.out.println("Please enter the percentage you would like to spend on bills: ");
+	money[1] = input.nextDouble();
+	System.out.println("Please enter the percentage you would like to spend on extra necessities: ");
+	money[2] = input.nextDouble();
+	int moneyFood = Salary * money[0];
+	int moneyBills = Salary * money[1];
+	int moneyExtra = Salary * money[2];
+	System.out.print("You should use " + moneyFood + "dollars for food, " + moneyBills + "dollar for bills and");
+	System.out.println(moneyExtra + "for extras.");
+
+}
 }
