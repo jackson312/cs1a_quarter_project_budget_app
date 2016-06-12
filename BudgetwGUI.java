@@ -1,5 +1,3 @@
-
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -153,11 +151,11 @@ public class Window {
 		
 		JLabel salary = new JLabel("Enter monthly income: ");
 		salary.setFont(new Font("Tahoma", Font.BOLD, 13));
-		salary.setBounds(412, 80, 100, 47);
+		salary.setBounds(412, 80, 150, 47);
 		contentPane2.add(salary);
 		
 		JTextArea salaryinput = new JTextArea();
-		salaryinput.setBounds(515, 90, 100, 30);
+		salaryinput.setBounds(588, 90, 78, 30);
 		contentPane2.add(salaryinput);
 		
 		table = new JTable(6,1);
