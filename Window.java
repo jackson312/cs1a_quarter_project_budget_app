@@ -385,9 +385,9 @@ public class Window
         compareButton.setBounds(638, 482, 100, 36);
         contentPane3.add(compareButton);
 
-        compareButton = new JButton("Manually adjust");
-        compareButton.setBounds(626, 520, 120, 36);
-        contentPane3.add(compareButton);
+        compareButton2 = new JButton("Manually adjust");
+        compareButton2.setBounds(626, 520, 120, 36);
+        contentPane3.add(compareButton2);
 
         save = new JButton("Save");
         save.setBounds(648, 11, 89, 23);
