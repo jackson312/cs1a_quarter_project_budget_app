@@ -1,3 +1,5 @@
+package final_project;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -78,19 +80,18 @@ public class Window
         });
     }
 
+    private Budget myBudget;
 
     public Window()
     {
+        myBudget = new Budget();
 
         initialize();
-
     }
 
 
     public void initialize()
     {
-
-
         frame = new JFrame("The Budget.");
         frame.setVisible(true);
         frame.setBounds(100, 100, 800, 600);
@@ -143,8 +144,6 @@ public class Window
         {
             public void actionPerformed(ActionEvent e)
             {
-
-
                 while (month == null)
                 {
                     month = (String) JOptionPane.showInputDialog(
@@ -188,7 +187,18 @@ public class Window
         table2.setBounds(588, 134, 78, 337);
 
         contentPane2.add(table2);
+        int offset = 134;
+        JLabel[] LabelList = new JLabel[Budget.BillCategory_t.values().length];
+        for (Budget.BillCategory_t i : Budget.BillCategory_t.values())
+        {
+            LabelList[i.ordinal()] = new JLabel(i.toString());
+            LabelList[i.ordinal()].setFont(new Font("Tahoma", Font.BOLD, 13));
+            LabelList[i.ordinal()].setBounds(412, offset, 78, 47);
+            contentPane2.add(LabelList[i.ordinal()]);
+            offset += 58;
+        }
 
+        /*
         JLabel rent = new JLabel("Rent");
         rent.setFont(new Font("Tahoma", Font.BOLD, 13));
         rent.setBounds(412, 134, 78, 47);
@@ -217,7 +227,7 @@ public class Window
         savings = new JLabel("Savings");
         savings.setFont(new Font("Tahoma", Font.BOLD, 13));
         savings.setBounds(412, 424, 78, 47);
-        contentPane2.add(savings);
+        contentPane2.add(savings); */
 
         showButton = new JButton("Show %");
         showButton.setBounds(500, 485, 78, 36);
@@ -232,22 +242,21 @@ public class Window
         save.setBounds(648, 11, 89, 23);
         contentPane2.add(save);
 
-        //Commented out, this grabs the values of the table (user input) to use in an array
-        /*double currentValues[] = new double[6];
-		
-		for (int i = 0; i < currentValues.length; i++)
+        // This needs to be after the user has pressed save. We also need to set it to 0.0 if the field is blank
+        // or skip over it. The list are initialized to 0.0 when they are created.
+        for (Budget.BillCategory_t i : Budget.BillCategory_t.values())
 		{
-		currentValues[i] = (double)table2.getValueAt(i, 0);
-		}*/
+            myBudget.clientBudget.billList[i.ordinal()] = (double)table2.getValueAt(i.ordinal(), 0);
+            System.out.println("clientBudget value saved for " + i.toString() + myBudget.clientBudget.billList[i.ordinal()]);
+
+		}
 
         //Second button & pane 3
-
         JButton button2 = new JButton("Increment month");
         button2.setFont(new Font("Tahoma", Font.PLAIN, 18));
         button2.setBackground(Color.WHITE);
         button2.setBounds(244, 373, 287, 90);
         button2.addActionListener(new ActionListener()
-
         {
             public void actionPerformed(ActionEvent e)
             {
