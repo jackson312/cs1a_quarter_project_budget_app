@@ -1,3 +1,5 @@
+import java.io.*;
+
 import java.util.Scanner;
 
 public class Budget
@@ -11,10 +13,20 @@ public class Budget
 
     private Scanner input = new Scanner(System.in);
 
+    final String BudgetValues = "BudgetValues.dat";
+    final String ActualValues = "ActualValues.dat";
+
     // Using an enum type so that we can easily map the location of the category and its name.
-    private enum BillCategory_t
+    public enum BillCategory_t
     {
-        Food, Gas, Rent, Bills, Extra, Savings
+        Food(0), Gas(1), Rent(2), Bills(3), Extra(4), Savings(5);
+
+        private int value;
+
+        private BillCategory_t(int value)
+        {
+            this.value = value;
+        }
     }
 
     private Bill[] budget = new Bill[BillCategory_t.values().length];
@@ -50,6 +62,45 @@ public class Budget
         }
     }
 
+    public void savevalues(Bill[] dataToSave, String filename)
+    {
+        try
+        {
+            FileOutputStream fos = new FileOutputStream(filename);
+            DataOutputStream dos = new DataOutputStream(fos);
+
+
+            for (BillCategory_t i : BillCategory_t.values())
+            {
+                dos.writeDouble(dataToSave[i.ordinal()].Amount);
+            }
+
+        }
+        catch (IOException e)
+        {
+            System.out.println("IOException in savevalues: " + e);
+        }
+    }
+
+    public void readvalues(Bill[] dataToRead, String filename)
+    {
+        try
+        {
+            FileInputStream fis = new FileInputStream(filename);
+            DataInputStream dis = new DataInputStream(fis);
+
+            for (BillCategory_t i : BillCategory_t.values())
+            {
+                dataToRead[i.ordinal()].Amount = dis.readDouble();
+            }
+            dis.close();
+        }
+        catch (IOException e)
+        {
+            System.out.println("IOException in readvalues: " + e);
+        }
+    }
+
     private double calculateTotal(Bill[] list)
     {
         double total = 0.0;
@@ -69,6 +120,9 @@ public class Budget
         // Calls clientEstimates
         myBudget.clientEstimates();
 
+        myBudget.savevalues(myBudget.budget, myBudget.BudgetValues);
+        myBudget.readvalues(myBudget.budget, myBudget.BudgetValues);
+
         // This could be moved to inside another helper function
         for (BillCategory_t i : BillCategory_t.values())
         {
@@ -82,60 +136,3 @@ public class Budget
                           myBudget.calculateTotal(myBudget.budget));
     }
 }
-
-
-//Junk code, saving in case it has something useful
-
-
-/*        double total;
-        input = new Scanner(System.in);
-        System.out.print("Please enter the number of bills you would like to add: ");
-        bills = new Bill[input.nextInt()];
-        input.nextLine();
-
-
-
-        total = 0.0;
-        for (Bill i: bills)
-        {
-            total += i.Amount;
-        }
-        System.out.println("The total amount for bills due is: $" + total);
-    }
-
-    public void getExpenses(BillCategory_t Category)
-    {
-        double Amount;
-
-        switch (Cat)
-        {
-            case Rent:
-
-                break;
-
-            case 2:
-
-                break;
-
-            case 3:
-
-                break;
-
-            case 4:
-                typeS = "food";
-                break;
-
-            case 5:
-                typeS = "gas";
-                break;
-
-            case 6:
-
-                break;
-        }
-
-        bills[count] = new Bill();
-                count++;
-        input.nextLine();
-    }
-*/
