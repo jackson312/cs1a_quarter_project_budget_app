@@ -2,6 +2,8 @@ package final_project;
 import java.io.*;
 import java.util.Scanner;
 
+import static final_project.Budget.BillCategory_t.Food;
+
 public class Budget
 {
     // Class, to be used as a storage class.
@@ -16,21 +18,24 @@ public class Budget
             }
         }
     }
+    private double MonthlySalary;
 
     private Scanner input = new Scanner(System.in);
 
     final String BudgetValues = "BudgetValues.dat";
     final String ActualValues = "ActualValues.dat";
+    final String MonthlySalaryfile = "MonthlySalary.dat";
 
     // Using an enum type so that we can easily map the location of the category and its name.
     public enum BillCategory_t
     {
-        Food(0), Gas(1), Rent(2), Bills(3), Extra(4), Savings(5);
+        Rent(0), Bills(1), Food(2), Gas(3), Other(4), Savings(5);
 
         private int value;
 
         private BillCategory_t(int value)
         {
+
             this.value = value;
         }
     }
@@ -42,9 +47,66 @@ public class Budget
     // Class Constructor, Initializes the two arrays with the storage class and sets the category names
     Budget()
     {
+        if (new File(BudgetValues).isFile())
+        {
+            readvalues(clientBudget, BudgetValues);
+        }
 
+        if (new File(ActualValues).isFile())
+        {
+            readvalues(clientActuals, ActualValues);
+        }
+
+        readinMonthlySalary();
     }
 
+    public double GetMonthlySalary()
+    {
+
+        return MonthlySalary;
+    }
+
+    public void saveMonthlyIncome(String income)
+    {
+        try
+        {
+            double tempdbl;
+            String tempstr;
+            PrintWriter fout = new PrintWriter(MonthlySalaryfile);
+            fout.println(income);
+            fout.close();
+        }
+        catch (IOException e)
+        {
+            System.out.println("IOException in savevalues: " + e);
+        }
+    }
+
+    public void readinMonthlySalary()
+    {
+        try
+        {
+            String tempstr;
+            if (new File(MonthlySalaryfile).isFile())
+            {
+                BufferedReader fin = new BufferedReader(new FileReader(MonthlySalaryfile));
+                tempstr = fin.readLine();
+                if (tempstr != "")
+                {
+                    MonthlySalary = Double.parseDouble(tempstr);
+                }
+                fin.close();
+            }
+        }
+        catch (IOException e)
+        {
+            System.out.println("IOException in readvalues: " + e);
+        }
+        //catch (FileNotFoundException e1)
+        //{
+          //  System.out.println("FileNotFoundException in ReadinMonthlySalary: " + e1);
+        //}
+    }
 
     public void clientEstimates()
     {
@@ -64,15 +126,17 @@ public class Budget
     {
         try
         {
-            FileOutputStream fos = new FileOutputStream(filename);
-            DataOutputStream dos = new DataOutputStream(fos);
-
+            double tempdbl;
+            String tempstr;
+            PrintWriter fout = new PrintWriter(filename);
 
             for (BillCategory_t i : BillCategory_t.values())
             {
-                dos.writeDouble(dataToSave.billList[i.ordinal()]);
+                tempdbl = dataToSave.billList[i.ordinal()];
+                tempstr = Double.toString(tempdbl);
+                fout.println(tempstr);
             }
-
+            fout.close();
         }
         catch (IOException e)
         {
@@ -84,14 +148,17 @@ public class Budget
     {
         try
         {
-            FileInputStream fis = new FileInputStream(filename);
-            DataInputStream dis = new DataInputStream(fis);
+            int i = 0;
+            String tempstr;
+            BufferedReader fin = new BufferedReader(new FileReader (filename));
 
-            for (BillCategory_t i : BillCategory_t.values())
+            while (((tempstr = fin.readLine()) != null) && (i < BillCategory_t.values().length))
             {
-                dataToRead.billList[i.ordinal()] = dis.readDouble();
+                dataToRead.billList[i] = Double.parseDouble(tempstr);
+                i++;
             }
-            dis.close();
+
+            fin.close();
         }
         catch (IOException e)
         {

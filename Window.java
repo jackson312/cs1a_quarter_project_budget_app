@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 
 public class Window
@@ -19,6 +20,7 @@ public class Window
     private JButton button;
     private JTable table;
     private JTable table2;
+    private DefaultTableModel model2;
     private JLabel rent;
     private JLabel bills;
     private JLabel food;
@@ -43,13 +45,37 @@ public class Window
     private JTable lastMonthtable2;
     private JTable thisMonthtable;
     private JButton compareButton;
+    private JButton compareButton2;
     private JLabel lastMonth;
     private JLabel newMonth;
     private JLabel suggest;
     private JButton showperCurrent;
     private JLabel adjustments;
     private JButton save;
-    ArrayList<String> possibilities = new ArrayList<String>(Arrays.asList("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"));
+    private JTextArea salaryinput;
+
+    ArrayList<String> possibilities = new ArrayList<String>(Arrays.asList("January", "February", "March",
+                                                                      "April", "May", "June", "July",
+                                                                      "August", "September", "October",
+                                                                      "November", "December"));
+    public Window()
+    {
+        double salarydb = 1;
+
+        myBudget = new Budget();
+        initialize();
+
+        salaryinput.setText(Double.toString(myBudget.GetMonthlySalary()));
+
+        for (Budget.BillCategory_t i : Budget.BillCategory_t.values())
+        {
+
+            table.setValueAt(String.format(" %10.2f", myBudget.clientBudget.billList[i.ordinal()]), i.ordinal(), 0);
+
+            table2.setValueAt((String.format(" %10.2f%%", (myBudget.clientActuals.billList[i.ordinal()] * 100.0))),
+                                  i.ordinal(), 0);
+        }
+    }
 
     public static void main(String[] args)
     {
@@ -81,14 +107,6 @@ public class Window
     }
 
     private Budget myBudget;
-
-    public Window()
-    {
-        myBudget = new Budget();
-
-        initialize();
-    }
-
 
     public void initialize()
     {
@@ -160,18 +178,21 @@ public class Window
                 frame.getContentPane().validate();
             }
         });
-        contentPane.add(button);
 
+        contentPane.add(button);
         JLabel salary = new JLabel("Enter monthly income: ");
         salary.setFont(new Font("Tahoma", Font.BOLD, 13));
         salary.setBounds(412, 80, 150, 47);
         contentPane2.add(salary);
 
-        JTextArea salaryinput = new JTextArea();
+        salaryinput = new JTextArea();
         salaryinput.setBounds(588, 90, 78, 30);
         contentPane2.add(salaryinput);
 
-        table = new JTable(6, 1);
+        String[] columns1 = {"Amount"};
+        Object[][] tableData = new Object[Budget.BillCategory_t.values().length][1];
+        table = new JTable(tableData, columns1);
+
         table.setShowVerticalLines(false);
         table.setRowHeight(57);
         table.setColumnSelectionAllowed(true);
@@ -179,14 +200,16 @@ public class Window
         table.setBounds(500, 134, 78, 337);
         contentPane2.add(table);
 
-        table2 = new JTable(6, 1);
+        String[] columns2 = {"Amount"};
+        Object[][] table2Data = new Object[Budget.BillCategory_t.values().length][1];
+        table2 = new JTable(table2Data, columns2);
         table2.setEnabled(false);
         table2.setShowVerticalLines(false);
         table2.setRowSelectionAllowed(false);
         table2.setRowHeight(57);
         table2.setBounds(588, 134, 78, 337);
-
         contentPane2.add(table2);
+
         int offset = 134;
         JLabel[] LabelList = new JLabel[Budget.BillCategory_t.values().length];
         for (Budget.BillCategory_t i : Budget.BillCategory_t.values())
@@ -198,64 +221,57 @@ public class Window
             offset += 58;
         }
 
-        /*
-        JLabel rent = new JLabel("Rent");
-        rent.setFont(new Font("Tahoma", Font.BOLD, 13));
-        rent.setBounds(412, 134, 78, 47);
-        contentPane2.add(rent);
-
-        bills = new JLabel("Bills");
-        bills.setFont(new Font("Tahoma", Font.BOLD, 13));
-        bills.setBounds(412, 192, 78, 47);
-        contentPane2.add(bills);
-
-        food = new JLabel("Food");
-        food.setFont(new Font("Tahoma", Font.BOLD, 13));
-        food.setBounds(412, 250, 78, 47);
-        contentPane2.add(food);
-
-        gas = new JLabel("Gas");
-        gas.setFont(new Font("Tahoma", Font.BOLD, 13));
-        gas.setBounds(412, 308, 78, 47);
-        contentPane2.add(gas);
-
-        other = new JLabel("Other");
-        other.setFont(new Font("Tahoma", Font.BOLD, 13));
-        other.setBounds(412, 366, 78, 47);
-        contentPane2.add(other);
-
-        savings = new JLabel("Savings");
-        savings.setFont(new Font("Tahoma", Font.BOLD, 13));
-        savings.setBounds(412, 424, 78, 47);
-        contentPane2.add(savings); */
-
         showButton = new JButton("Show %");
         showButton.setBounds(500, 485, 78, 36);
         contentPane2.add(showButton);
+        showButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                String salary;
+                double salarydb;
+                salary = salaryinput.getText();
+                myBudget.saveMonthlyIncome(salary);
+                salarydb = Double.parseDouble(salary);
+
+                for (Budget.BillCategory_t i : Budget.BillCategory_t.values())
+                {
+                    myBudget.clientActuals.billList[i.ordinal()] = (myBudget.clientBudget.billList[i.ordinal()] / salarydb);
+                    table2.setValueAt((String.format(" %10.2f%%", (myBudget.clientActuals.billList[i.ordinal()] * 100.0))), i.ordinal(), 0);
+                }
+                myBudget.savevalues(myBudget.clientActuals, myBudget.ActualValues);
+            }
+        });
 
         currentMonth = new JLabel();
         currentMonth.setFont(new Font("Tahoma", Font.PLAIN, 40));
         currentMonth.setBounds(44, 11, 400, 75);
         contentPane2.add(currentMonth);
 
+        // Save Button Setup
         save = new JButton("Save");
         save.setBounds(648, 11, 89, 23);
         contentPane2.add(save);
-
-        // This needs to be after the user has pressed save. We also need to set it to 0.0 if the field is blank
-        // or skip over it. The list are initialized to 0.0 when they are created.
-        for (Budget.BillCategory_t i : Budget.BillCategory_t.values())
-		{
-            myBudget.clientBudget.billList[i.ordinal()] = (double)table2.getValueAt(i.ordinal(), 0);
-            System.out.println("clientBudget value saved for " + i.toString() + myBudget.clientBudget.billList[i.ordinal()]);
-
-		}
+        save.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                String tmpstr;
+                for (Budget.BillCategory_t i : Budget.BillCategory_t.values())
+                {
+                    tmpstr = (String) table.getValueAt(i.ordinal(), 0);
+                    myBudget.clientBudget.billList[i.ordinal()] = Double.parseDouble(tmpstr);
+                    myBudget.savevalues(myBudget.clientBudget, myBudget.BudgetValues);
+                }
+            }
+        });
 
         //Second button & pane 3
         JButton button2 = new JButton("Increment month");
         button2.setFont(new Font("Tahoma", Font.PLAIN, 18));
         button2.setBackground(Color.WHITE);
         button2.setBounds(244, 373, 287, 90);
+
         button2.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -392,6 +408,5 @@ public class Window
         save = new JButton("Save");
         save.setBounds(648, 11, 89, 23);
         contentPane3.add(save);
-
     }
 }
