@@ -1,3 +1,5 @@
+package final_project;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,7 +9,7 @@ import javax.swing.*;
 
 
 
-public class Window {
+	class Window {
 	
 	private JFrame frame;
 	private JPanel contentPane;
